@@ -1,0 +1,43 @@
+{
+  "name": "@theyahia/alfa-bank-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for Alfa-Bank Business API — accounts, payments, statements, exchange rates",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "alfa-bank-mcp": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "alfa-bank",
+    "russian-api",
+    "banking",
+    "typescript"
+  ],
+  "author": "theYahia",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.1"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}
