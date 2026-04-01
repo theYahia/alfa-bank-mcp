@@ -1,7 +1,7 @@
 {
   "name": "@theyahia/alfa-bank-mcp",
-  "version": "1.0.0",
-  "description": "MCP server for Alfa-Bank Business API — accounts, payments, statements, exchange rates",
+  "version": "1.0.1",
+  "description": "MCP server for Alfa-Bank — business accounts, payments, statements (Russia)",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
@@ -20,7 +20,8 @@
     "alfa-bank",
     "russian-api",
     "banking",
-    "typescript"
+    "typescript",
+    "api"
   ],
   "author": "theYahia",
   "license": "MIT",
