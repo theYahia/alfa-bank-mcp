@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "alfa-bank": {
+      "command": "npx",
+      "args": ["-y", "@theyahia/alfa-bank-mcp"],
+      "env": {
+        "ALFA_CLIENT_ID": "your-client-id",
+        "ALFA_CLIENT_SECRET": "your-client-secret"
+      }
+    }
+  }
+}

@@ -1,47 +1,65 @@
+/**
+ * Payment tools: create_payment_order (destructive), get_payment_status.
+ */
+
 import { z } from "zod";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { AlfaBankClient } from "../client.js";
+import { PAYMENT, READ_ONLY } from "../lib/annotations.js";
+import { error, success } from "../lib/formatters.js";
 
-export const createPaymentOrderTool = {
-  name: "create_payment_order",
-  description:
-    "Create a new payment order in Alfa-Bank. Transfers funds from one account to another using BIK and account number.",
-  inputSchema: z.object({
-    from_account: z.string().describe("Source account number"),
-    to_account: z.string().describe("Destination account number"),
-    to_bik: z.string().describe("Destination bank BIK (9 digits)"),
-    amount: z.number().positive().describe("Amount in minor units (kopeks)"),
-    purpose: z.string().describe("Payment purpose description"),
-  }),
-  handler: async (
-    client: AlfaBankClient,
-    args: {
-      from_account: string;
-      to_account: string;
-      to_bik: string;
-      amount: number;
-      purpose: string;
-    }
-  ) => {
-    const order = await client.createPaymentOrder({
-      fromAccount: args.from_account,
-      toAccount: args.to_account,
-      toBik: args.to_bik,
-      amount: args.amount,
-      purpose: args.purpose,
-    });
-    return { content: [{ type: "text" as const, text: JSON.stringify(order, null, 2) }] };
-  },
-};
+export function registerPaymentTools(server: McpServer, client: AlfaBankClient): void {
+  server.registerTool(
+    "create_payment_order",
+    {
+      title: "Create payment order",
+      description:
+        "Create a new payment order in Alfa-Bank (moves real money). Transfers funds from one account to " +
+        "another using BIK and account number. Note: the production API submits payments as a SIGNED " +
+        "registry — this requires a PKCS#7 GOST signature (see README); without an injected signer it " +
+        "returns a clear error explaining what is needed.",
+      inputSchema: {
+        from_account: z.string().min(1).describe("Source account number"),
+        to_account: z.string().min(1).describe("Destination account number"),
+        to_bik: z.string().describe("Destination bank BIK (9 digits)"),
+        amount: z.number().positive().describe("Amount in minor units (kopeks)"),
+        purpose: z.string().min(1).describe("Payment purpose description"),
+      },
+      annotations: PAYMENT,
+    },
+    async (args) => {
+      try {
+        return success(
+          await client.createPaymentOrder({
+            fromAccount: args.from_account,
+            toAccount: args.to_account,
+            toBik: args.to_bik,
+            amount: args.amount,
+            purpose: args.purpose,
+          }),
+        );
+      } catch (err) {
+        return error(err instanceof Error ? err.message : "Failed to create payment order.");
+      }
+    },
+  );
 
-export const getPaymentStatusTool = {
-  name: "get_payment_status",
-  description:
-    "Check the status of a previously created payment order by its ID.",
-  inputSchema: z.object({
-    payment_id: z.string().describe("The payment order ID"),
-  }),
-  handler: async (client: AlfaBankClient, args: { payment_id: string }) => {
-    const status = await client.getPaymentStatus(args.payment_id);
-    return { content: [{ type: "text" as const, text: JSON.stringify(status, null, 2) }] };
-  },
-};
+  server.registerTool(
+    "get_payment_status",
+    {
+      title: "Get payment status",
+      description: "Check the status of a previously created payment order by its ID.",
+      inputSchema: {
+        payment_id: z.string().min(1).describe("The payment order / registry ID"),
+      },
+      annotations: READ_ONLY,
+    },
+    async (args) => {
+      try {
+        return success(await client.getPaymentStatus(args.payment_id));
+      } catch (err) {
+        return error(err instanceof Error ? err.message : "Failed to get payment status.");
+      }
+    },
+  );
+}

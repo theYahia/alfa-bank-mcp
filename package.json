@@ -1,23 +1,29 @@
 {
   "name": "@theyahia/alfa-bank-mcp",
-  "version": "1.0.1",
-  "description": "MCP server for Alfa-Bank — business accounts, payments, statements (Russia)",
+  "version": "1.1.0",
+  "description": "MCP server for Alfa-Bank Business (Alfa API) — accounts, statements, payments, beneficiaries, rates, payroll (Russia)",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
     "alfa-bank-mcp": "dist/index.js"
   },
+  "mcpName": "io.github.theYahia/alfa-bank-mcp",
   "scripts": {
     "build": "tsc",
     "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "format": "biome format --write .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run typecheck && npm run lint && npm run build && npm test"
   },
   "keywords": [
     "mcp",
     "mcp-server",
     "alfa-bank",
+    "alfa-api",
     "russian-api",
     "banking",
     "typescript",
@@ -26,11 +32,13 @@
   "author": "theYahia",
   "license": "MIT",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.12.1",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "undici": "^6.21.0",
     "zod": "^3.24.4"
   },
   "devDependencies": {
-    "@types/node": "^25.5.0",
+    "@biomejs/biome": "^2.5.1",
+    "@types/node": "^22.0.0",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3",
     "vitest": "^3.1.1"
@@ -40,5 +48,8 @@
   ],
   "engines": {
     "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
