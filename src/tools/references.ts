@@ -1,35 +1,65 @@
-import { z } from "zod";
+/**
+ * Reference tools: list_counterparties, get_exchange_rates, get_salary_registry.
+ */
+
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { AlfaBankClient } from "../client.js";
+import { READ_ONLY } from "../lib/annotations.js";
+import { error, success } from "../lib/formatters.js";
 
-export const listCounterpartiesTool = {
-  name: "list_counterparties",
-  description:
-    "List all saved counterparties (business partners) in Alfa-Bank. Returns names, INN, KPP, BIK, and account numbers.",
-  inputSchema: z.object({}),
-  handler: async (client: AlfaBankClient) => {
-    const counterparties = await client.listCounterparties();
-    return { content: [{ type: "text" as const, text: JSON.stringify(counterparties, null, 2) }] };
-  },
-};
+export function registerReferenceTools(server: McpServer, client: AlfaBankClient): void {
+  server.registerTool(
+    "list_counterparties",
+    {
+      title: "List counterparties",
+      description:
+        "List all saved counterparties (business partners / beneficiaries) in Alfa-Bank. Returns names, " +
+        "INN, KPP, BIK, and account numbers.",
+      inputSchema: {},
+      annotations: READ_ONLY,
+    },
+    async () => {
+      try {
+        return success(await client.listCounterparties());
+      } catch (err) {
+        return error(err instanceof Error ? err.message : "Failed to list counterparties.");
+      }
+    },
+  );
 
-export const getExchangeRatesTool = {
-  name: "get_exchange_rates",
-  description:
-    "Get current currency exchange rates from Alfa-Bank, including buy/sell rates and Central Bank rate.",
-  inputSchema: z.object({}),
-  handler: async (client: AlfaBankClient) => {
-    const rates = await client.getExchangeRates();
-    return { content: [{ type: "text" as const, text: JSON.stringify(rates, null, 2) }] };
-  },
-};
+  server.registerTool(
+    "get_exchange_rates",
+    {
+      title: "Get exchange rates",
+      description:
+        "Get current currency exchange rates from Alfa-Bank, including buy/sell rates and Central Bank rate.",
+      inputSchema: {},
+      annotations: READ_ONLY,
+    },
+    async () => {
+      try {
+        return success(await client.getExchangeRates());
+      } catch (err) {
+        return error(err instanceof Error ? err.message : "Failed to get exchange rates.");
+      }
+    },
+  );
 
-export const getSalaryRegistryTool = {
-  name: "get_salary_registry",
-  description:
-    "Get payroll (salary) registries from Alfa-Bank. Returns registry status, total amount, and employee count.",
-  inputSchema: z.object({}),
-  handler: async (client: AlfaBankClient) => {
-    const registry = await client.getSalaryRegistry();
-    return { content: [{ type: "text" as const, text: JSON.stringify(registry, null, 2) }] };
-  },
-};
+  server.registerTool(
+    "get_salary_registry",
+    {
+      title: "Get salary registry",
+      description:
+        "Get payroll (salary) registries from Alfa-Bank. Returns registry status, total amount, and employee count.",
+      inputSchema: {},
+      annotations: READ_ONLY,
+    },
+    async () => {
+      try {
+        return success(await client.getSalaryRegistry());
+      } catch (err) {
+        return error(err instanceof Error ? err.message : "Failed to get salary registry.");
+      }
+    },
+  );
+}

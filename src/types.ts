@@ -1,7 +1,15 @@
+import type { Signer } from "./auth/signer.js";
+
 export interface AlfaAuthConfig {
   clientId: string;
   clientSecret: string;
   baseUrl: string;
+  /** OAuth/OIDC scope(s), space-separated. Required by some Alfa API methods. */
+  scope?: string;
+  /** Per-request timeout in milliseconds (default 15000). */
+  timeoutMs?: number;
+  /** Signer for operational (money-moving) methods. Defaults to UnimplementedSigner. */
+  signer?: Signer;
 }
 
 export interface AlfaTokenResponse {
@@ -9,6 +17,8 @@ export interface AlfaTokenResponse {
   token_type: string;
   expires_in: number;
   refresh_token?: string;
+  /** OpenID Connect ID token (Alfa ID issues OIDC tokens from /oidc/token). */
+  id_token?: string;
 }
 
 export interface AlfaAccount {

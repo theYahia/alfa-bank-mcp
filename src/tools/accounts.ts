@@ -1,48 +1,70 @@
+/**
+ * Account tools: list_accounts, get_account_balance, get_account_statement.
+ */
+
 import { z } from "zod";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { AlfaBankClient } from "../client.js";
+import { READ_ONLY } from "../lib/annotations.js";
+import { error, success } from "../lib/formatters.js";
 
-export const listAccountsTool = {
-  name: "list_accounts",
-  description:
-    "List all business accounts in Alfa-Bank. Returns account numbers, currencies, types, and statuses.",
-  inputSchema: z.object({}),
-  handler: async (client: AlfaBankClient) => {
-    const accounts = await client.listAccounts();
-    return { content: [{ type: "text" as const, text: JSON.stringify(accounts, null, 2) }] };
-  },
-};
+export function registerAccountTools(server: McpServer, client: AlfaBankClient): void {
+  server.registerTool(
+    "list_accounts",
+    {
+      title: "List accounts",
+      description:
+        "List all business accounts in Alfa-Bank. Returns account numbers, currencies, types, and statuses.",
+      inputSchema: {},
+      annotations: READ_ONLY,
+    },
+    async () => {
+      try {
+        return success(await client.listAccounts());
+      } catch (err) {
+        return error(err instanceof Error ? err.message : "Failed to list accounts.");
+      }
+    },
+  );
 
-export const getAccountBalanceTool = {
-  name: "get_account_balance",
-  description:
-    "Get the current balance of a specific Alfa-Bank business account by its ID.",
-  inputSchema: z.object({
-    account_id: z.string().describe("The unique account identifier"),
-  }),
-  handler: async (client: AlfaBankClient, args: { account_id: string }) => {
-    const balance = await client.getAccountBalance(args.account_id);
-    return { content: [{ type: "text" as const, text: JSON.stringify(balance, null, 2) }] };
-  },
-};
+  server.registerTool(
+    "get_account_balance",
+    {
+      title: "Get account balance",
+      description: "Get the current balance of a specific Alfa-Bank business account by its ID.",
+      inputSchema: {
+        account_id: z.string().min(1).describe("The unique account identifier"),
+      },
+      annotations: READ_ONLY,
+    },
+    async (args) => {
+      try {
+        return success(await client.getAccountBalance(args.account_id));
+      } catch (err) {
+        return error(err instanceof Error ? err.message : "Failed to get account balance.");
+      }
+    },
+  );
 
-export const getAccountStatementTool = {
-  name: "get_account_statement",
-  description:
-    "Get account statement (transactions) for a date range. Returns credits, debits, opening/closing balance.",
-  inputSchema: z.object({
-    account_id: z.string().describe("The unique account identifier"),
-    date_from: z.string().describe("Start date in YYYY-MM-DD format"),
-    date_to: z.string().describe("End date in YYYY-MM-DD format"),
-  }),
-  handler: async (
-    client: AlfaBankClient,
-    args: { account_id: string; date_from: string; date_to: string }
-  ) => {
-    const statement = await client.getAccountStatement(
-      args.account_id,
-      args.date_from,
-      args.date_to
-    );
-    return { content: [{ type: "text" as const, text: JSON.stringify(statement, null, 2) }] };
-  },
-};
+  server.registerTool(
+    "get_account_statement",
+    {
+      title: "Get account statement",
+      description:
+        "Get account statement (transactions) for a date range. Returns credits, debits, opening/closing balance.",
+      inputSchema: {
+        account_id: z.string().min(1).describe("The account number"),
+        date_from: z.string().describe("Start date in YYYY-MM-DD format"),
+        date_to: z.string().describe("End date in YYYY-MM-DD format"),
+      },
+      annotations: READ_ONLY,
+    },
+    async (args) => {
+      try {
+        return success(await client.getAccountStatement(args.account_id, args.date_from, args.date_to));
+      } catch (err) {
+        return error(err instanceof Error ? err.message : "Failed to get account statement.");
+      }
+    },
+  );
+}
