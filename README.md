@@ -7,7 +7,7 @@ MCP server for Alfa-Bank Business (Alfa API) — accounts, balances, statements,
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![smithery badge](https://smithery.ai/badge/@theyahia/alfa-bank-mcp)](https://smithery.ai/server/@theyahia/alfa-bank-mcp)
 
-Part of [Russian API MCP](https://github.com/theYahia/russian-mcp) series by [@theYahia](https://github.com/theYahia).
+Part of [WWmcp](https://github.com/theYahia/WWmcp) series by [@theYahia](https://github.com/theYahia).
 
 > ⚠️ **Read the [Disclaimer & endpoint verification status](#disclaimer--endpoint-verification-status) before use.** This server targets the real [Alfa API](https://developers.alfabank.ru/), but production access requires mTLS and PKCS#7 GOST request signing — see below.
 
@@ -168,15 +168,19 @@ npm test            # vitest
 npx @modelcontextprotocol/inspector node dist/index.js
 ```
 
-## Part of Russian API MCP Series
+## Part of WWmcp Series
 
 | MCP | Status | Description |
 |-----|--------|-------------|
 | [@theyahia/cbr-mcp](https://github.com/theYahia/cbr-mcp) | ready | Currency rates, key rate |
 | [@theyahia/yookassa-mcp](https://github.com/theYahia/yookassa-mcp) | ready | Payments, refunds, receipts, payouts, webhooks |
 | [@theyahia/alfa-bank-mcp](https://github.com/theYahia/alfa-bank-mcp) | this server | Business accounts, statements, payments |
-| ... | | [full list](https://github.com/theYahia/russian-mcp) |
+| ... | | [full list](https://github.com/theYahia/WWmcp) |
 
 ## License
 
 MIT
+
+---
+
+Часть [WWmcp](https://github.com/theYahia/WWmcp) · Telegram: [@vhodvai](https://t.me/vhodvai)
