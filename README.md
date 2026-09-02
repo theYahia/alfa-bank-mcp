@@ -1,6 +1,8 @@
-# @theyahia/alfa-bank-mcp
+# MCP-сервер для Альфа-Банк Бизнес (Alfa API) — счета, выписки и платежи через ИИ
 
-MCP server for Alfa-Bank Business (Alfa API) — accounts, balances, statements, payment orders, counterparties, exchange rates, and payroll registries. **8 tools.**
+Если вы искали, как подключить Alfa API к нейросети, поднять баланс и выписку по расчётному счёту или подготовить платёжное поручение из чата — это оно. 8 инструментов: счета и балансы, выписки, платёжные поручения, контрагенты, курсы валют, зарплатные реестры. Боевой доступ к Alfa API требует mTLS и подписи ГОСТ PKCS#7 — прочитайте раздел о статусе проверки эндпоинтов ниже, прежде чем подключать продакшн.
+
+> MCP server for Alfa-Bank Business (Alfa API) — accounts, balances, statements, payment orders, counterparties, exchange rates, and payroll registries. **8 tools.**
 
 [![npm](https://img.shields.io/npm/v/@theyahia/alfa-bank-mcp)](https://www.npmjs.com/package/@theyahia/alfa-bank-mcp)
 [![CI](https://github.com/theYahia/alfa-bank-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/theYahia/alfa-bank-mcp/actions/workflows/ci.yml)
