@@ -2,18 +2,18 @@
 
 Если вы искали, как подключить Alfa API к нейросети, поднять баланс и выписку по расчётному счёту или подготовить платёжное поручение из чата — это оно. 8 инструментов: счета и балансы, выписки, платёжные поручения, контрагенты, курсы валют, зарплатные реестры. Боевой доступ к Alfa API требует mTLS и подписи ГОСТ PKCS#7 — прочитайте раздел о статусе проверки эндпоинтов ниже, прежде чем подключать продакшн.
 
-> MCP server for Alfa-Bank Business (Alfa API) — accounts, balances, statements, payment orders, counterparties, exchange rates, and payroll registries. **8 tools.**
+> MCP-сервер для Альфа-Банк Бизнес (Alfa API) — счета, балансы, выписки, платёжные поручения, контрагенты, курсы валют и зарплатные реестры. **8 инструментов.**
 
 [![npm](https://img.shields.io/npm/v/@theyahia/alfa-bank-mcp)](https://www.npmjs.com/package/@theyahia/alfa-bank-mcp)
 [![CI](https://github.com/theYahia/alfa-bank-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/theYahia/alfa-bank-mcp/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![smithery badge](https://smithery.ai/badge/@theyahia/alfa-bank-mcp)](https://smithery.ai/server/@theyahia/alfa-bank-mcp)
 
-Part of [WWmcp](https://github.com/theYahia/WWmcp) series by [@theYahia](https://github.com/theYahia).
+Часть серии [WWmcp](https://github.com/theYahia/WWmcp) от [@theYahia](https://github.com/theYahia).
 
-> ⚠️ **Read the [Disclaimer & endpoint verification status](#disclaimer--endpoint-verification-status) before use.** This server targets the real [Alfa API](https://developers.alfabank.ru/), but production access requires mTLS and PKCS#7 GOST request signing — see below.
+> ⚠️ **Прочитайте [Дисклеймер и статус проверки эндпоинтов](#дисклеймер-и-статус-проверки-эндпоинтов) перед использованием.** Сервер работает с реальным [Alfa API](https://developers.alfabank.ru/), но боевой доступ требует mTLS и подписи запросов PKCS#7 ГОСТ — подробности ниже.
 
-## Quick Start
+## Быстрый старт
 
 ### Claude Desktop
 
@@ -72,114 +72,114 @@ claude mcp add alfa-bank -e ALFA_CLIENT_ID=your-id -e ALFA_CLIENT_SECRET=your-se
 }
 ```
 
-### Streamable HTTP (remote / Docker)
+### Streamable HTTP (удалённый сервер / Docker)
 
 ```bash
 HTTP_PORT=3000 npx -y @theyahia/alfa-bank-mcp --http
 ```
 
-Endpoints:
-- `POST /mcp` — MCP Streamable HTTP transport
-- `GET /health` — health check (`{ "status": "ok", "tools": 8 }`)
+Эндпоинты:
+- `POST /mcp` — транспорт MCP Streamable HTTP
+- `GET /health` — проверка состояния (`{ "status": "ok", "tools": 8 }`)
 
-## Environment Variables
+## Переменные окружения
 
-| Variable | Required | Description |
+| Переменная | Обяз. | Описание |
 |----------|:--------:|-------------|
-| `ALFA_CLIENT_ID` | Yes | OAuth 2.0 client ID from the [Alfa-Bank developer portal](https://developers.alfabank.ru/) |
-| `ALFA_CLIENT_SECRET` | Yes | OAuth 2.0 client secret |
-| `ALFA_BASE_URL` | No | API base URL (default `https://baas.alfabank.ru`) |
-| `ALFA_SCOPE` | No | Space-separated OAuth/OIDC scopes required by the called methods |
-| `ALFA_TLS_CERT` | No | mTLS client certificate (inline PEM or file path) — **required for live API access** |
-| `ALFA_TLS_KEY` | No | mTLS client private key (inline PEM or file path) |
-| `ALFA_TLS_CA` | No | mTLS CA bundle (inline PEM or file path) |
-| `ALFA_TIMEOUT_MS` | No | Per-request timeout in ms (default `15000`) |
-| `HTTP_PORT` | No | Port for HTTP transport (default `3000`) |
+| `ALFA_CLIENT_ID` | да | OAuth 2.0 client ID с [портала разработчика Альфа-Банка](https://developers.alfabank.ru/) |
+| `ALFA_CLIENT_SECRET` | да | OAuth 2.0 client secret |
+| `ALFA_BASE_URL` | нет | Базовый URL API (по умолчанию `https://baas.alfabank.ru`) |
+| `ALFA_SCOPE` | нет | Scope'ы OAuth/OIDC через пробел, которых требуют вызываемые методы |
+| `ALFA_TLS_CERT` | нет | Клиентский сертификат mTLS (PEM строкой или путь к файлу) — **обязателен для боевого доступа** |
+| `ALFA_TLS_KEY` | нет | Приватный ключ клиента mTLS (PEM строкой или путь к файлу) |
+| `ALFA_TLS_CA` | нет | Набор корневых сертификатов mTLS (PEM строкой или путь к файлу) |
+| `ALFA_TIMEOUT_MS` | нет | Таймаут запроса в мс (по умолчанию `15000`) |
+| `HTTP_PORT` | нет | Порт HTTP-транспорта (по умолчанию `3000`) |
 
-## Tools (8)
+## Инструменты (8)
 
-| Tool | Description | Annotation |
+| Инструмент | Описание | Пометка |
 |------|-------------|:----------:|
-| `list_accounts` | List all business accounts | read-only |
-| `get_account_balance` | Get current balance for an account | read-only |
-| `get_account_statement` | Get transactions for a date range | read-only |
-| `create_payment_order` | Create a payment order (moves real money) | **destructive** |
-| `get_payment_status` | Check payment order / registry status | read-only |
-| `list_counterparties` | List saved counterparties (beneficiaries) | read-only |
-| `get_exchange_rates` | Get current exchange rates | read-only |
-| `get_salary_registry` | Get payroll (salary) registries | read-only |
+| `list_accounts` | Список всех бизнес-счетов | только чтение |
+| `get_account_balance` | Текущий баланс по счёту | только чтение |
+| `get_account_statement` | Операции за период | только чтение |
+| `create_payment_order` | Создать платёжное поручение (двигает реальные деньги) | **разрушающая** |
+| `get_payment_status` | Статус платёжного поручения или реестра | только чтение |
+| `list_counterparties` | Сохранённые контрагенты (получатели) | только чтение |
+| `get_exchange_rates` | Текущие курсы валют | только чтение |
+| `get_salary_registry` | Зарплатные реестры | только чтение |
 
-`create_payment_order` is annotated `destructiveHint: true` so MCP clients can require explicit confirmation before it runs.
+У `create_payment_order` выставлен `destructiveHint: true`, чтобы MCP-клиенты требовали явного подтверждения перед запуском.
 
-## Demo Prompts
-
-```
-Show me all my Alfa-Bank business accounts and their balances
-```
+## Демо-промпты
 
 ```
-Get my account statement for March 2026 and summarize the biggest expenses
+Покажи все мои бизнес-счета в Альфа-Банке и их балансы
 ```
 
 ```
-Create a payment of 150,000 RUB to account 40702810000000005678 at BIK 044525225 for consulting services
+Достань выписку по счёту за март 2026 и выдели самые крупные траты
 ```
 
-## Architecture
+```
+Создай платёж на 150 000 рублей на счёт 40702810000000005678, БИК 044525225, назначение — консультационные услуги
+```
 
-- **Base URL**: `https://baas.alfabank.ru` (override via `ALFA_BASE_URL`)
-- **Auth**: OAuth 2.0 / OpenID Connect via Alfa ID — token from `POST /oidc/token` (client credentials), cached until expiry, optional `scope`
-- **mTLS**: production mandates a client certificate on every call; supplied via `ALFA_TLS_CERT` / `ALFA_TLS_KEY` (+ optional `ALFA_TLS_CA`) and installed as a global undici dispatcher
-- **Signing**: operational methods (payments) require an `X-Alfabank-Signature` PKCS#7 (CAdES-BES) GOST-2012 signature; not implemented by default — inject a `Signer` (`src/auth/signer.ts`) to enable payment submission
-- **Timeout**: per-request `AbortController` (default 15s)
-- **Retry**: bounded retries with exponential backoff + jitter on 429 / 5xx / network / timeout; a 401 triggers one re-authentication
-- **Transport**: stdio (default) or Streamable HTTP (`--http` / `HTTP_PORT`)
-- **Safety**: credentials are never logged or placed in error messages; under stdio all logs go to stderr
+## Архитектура
 
-## Disclaimer & endpoint verification status
+- **Базовый URL**: `https://baas.alfabank.ru` (переопределяется через `ALFA_BASE_URL`)
+- **Авторизация**: OAuth 2.0 / OpenID Connect через Alfa ID — токен из `POST /oidc/token` (client credentials), кэшируется до истечения, `scope` опционален
+- **mTLS**: в продакшене клиентский сертификат обязателен на каждом вызове; задаётся через `ALFA_TLS_CERT` / `ALFA_TLS_KEY` (+ опционально `ALFA_TLS_CA`) и ставится глобальным диспетчером undici
+- **Подпись**: операционные методы (платежи) требуют подписи `X-Alfabank-Signature` в формате PKCS#7 (CAdES-BES) по ГОСТ-2012; по умолчанию не реализована — подключите свой `Signer` (`src/auth/signer.ts`), чтобы отправлять платежи
+- **Таймаут**: `AbortController` на каждый запрос (по умолчанию 15 с)
+- **Повторы**: ограниченное число повторов с экспоненциальной задержкой и джиттером на 429 / 5xx / сетевых ошибках / таймаутах; 401 запускает одну повторную аутентификацию
+- **Транспорт**: stdio (по умолчанию) или Streamable HTTP (`--http` / `HTTP_PORT`)
+- **Безопасность**: реквизиты никогда не попадают в логи и тексты ошибок; в режиме stdio все логи идут в stderr
 
-This package is aligned to the **public** [Alfa API documentation](https://developers.alfabank.ru/products/alfa-api/documentation), but it is **not a verified, production-ready integration**:
+## Дисклеймер и статус проверки эндпоинтов
 
-- Production access requires **mTLS certificates**, **PKCS#7 GOST request signing**, and a **signed technical-interaction contract** with the bank. Without these, the server **cannot reach the live contour** — it runs in demo mode.
-- `create_payment_order` reflects the real **registry + electronic-signature** model. With the default (unimplemented) signer it returns a clear error instead of submitting; inject a real `Signer` to enable it.
-- Endpoint paths were corrected toward the documented surface. Confidence varies — items marked **VERIFY** below (and with `// VERIFY` comments in `src/client.ts`) should be confirmed against the live Swagger on each method's doc page before relying on them.
+Пакет собран по **публичной** [документации Alfa API](https://developers.alfabank.ru/products/alfa-api/documentation), но это **не проверенная, готовая к продакшену интеграция**:
 
-| Tool | Path | Status |
+- Боевой доступ требует **сертификатов mTLS**, **подписи запросов PKCS#7 по ГОСТ** и **подписанного договора о техническом взаимодействии** с банком. Без этого сервер **не достучится до боевого контура** — он работает в демо-режиме.
+- `create_payment_order` отражает реальную модель **реестра + электронной подписи**. С подписантом по умолчанию (не реализован) он возвращает понятную ошибку вместо отправки; подключите настоящий `Signer`, чтобы включить отправку.
+- Пути эндпоинтов приведены к документированной поверхности. Уверенность разная — пункты, помеченные ниже как **ПРОВЕРИТЬ** (и комментариями `// VERIFY` в `src/client.ts`), стоит сверить с живым Swagger на странице документации каждого метода, прежде чем на них полагаться.
+
+| Инструмент | Путь | Статус |
 |------|------|--------|
-| auth | `POST /oidc/token` | ✅ documented |
-| `get_account_statement` | `GET /api/statement/transactions` | ✅ path documented; range params **VERIFY** (docs use `statementDate`+`page`) |
-| `list_accounts` | `GET /api/pp/v1/accounts` | 🟡 likely |
-| `get_payment_status` | `GET /api/jp/v1/registries/{id}` | 🟡 likely |
-| `create_payment_order` | `POST /api/jp/v1/registries` + signature | 🟡 model documented; exact create payload **VERIFY** |
-| `list_counterparties` | `GET /na/jp/v1/beneficiaries` | 🟡 concept documented (beneficiaries); list path **VERIFY** |
-| `get_exchange_rates` | `GET /api/rates/gd/v1/offices-rates` | 🟡 likely |
-| `get_account_balance` | `GET /api/pp/v1/accounts/{id}/balance` | ⚠️ **VERIFY** (own-account balance path not confirmed) |
-| `get_salary_registry` | `GET /api/jp/v1/registries?type=SALARY` | ⚠️ **VERIFY** (not confirmed in public docs) |
+| авторизация | `POST /oidc/token` | ✅ документирован |
+| `get_account_statement` | `GET /api/statement/transactions` | ✅ путь документирован; параметры периода **ПРОВЕРИТЬ** (в доке `statementDate`+`page`) |
+| `list_accounts` | `GET /api/pp/v1/accounts` | 🟡 вероятно |
+| `get_payment_status` | `GET /api/jp/v1/registries/{id}` | 🟡 вероятно |
+| `create_payment_order` | `POST /api/jp/v1/registries` + подпись | 🟡 модель документирована; точное тело запроса **ПРОВЕРИТЬ** |
+| `list_counterparties` | `GET /na/jp/v1/beneficiaries` | 🟡 концепция документирована (beneficiaries); путь списка **ПРОВЕРИТЬ** |
+| `get_exchange_rates` | `GET /api/rates/gd/v1/offices-rates` | 🟡 вероятно |
+| `get_account_balance` | `GET /api/pp/v1/accounts/{id}/balance` | ⚠️ **ПРОВЕРИТЬ** (путь баланса собственного счёта не подтверждён) |
+| `get_salary_registry` | `GET /api/jp/v1/registries?type=SALARY` | ⚠️ **ПРОВЕРИТЬ** (в публичной документации не подтверждён) |
 
-## Development
+## Разработка
 
 ```bash
 npm install
-npm run dev        # run with tsx
+npm run dev        # запуск через tsx
 npm run typecheck
 npm run lint        # biome
 npm run build
 npm test            # vitest
 
-# inspect with the MCP Inspector
+# отладка через MCP Inspector
 npx @modelcontextprotocol/inspector node dist/index.js
 ```
 
-## Part of WWmcp Series
+## Часть серии WWmcp
 
-| MCP | Status | Description |
+| MCP | Статус | Описание |
 |-----|--------|-------------|
-| [@theyahia/cbr-mcp](https://github.com/theYahia/cbr-mcp) | ready | Currency rates, key rate |
-| [@theyahia/yookassa-mcp](https://github.com/theYahia/yookassa-mcp) | ready | Payments, refunds, receipts, payouts, webhooks |
-| [@theyahia/alfa-bank-mcp](https://github.com/theYahia/alfa-bank-mcp) | this server | Business accounts, statements, payments |
-| ... | | [full list](https://github.com/theYahia/WWmcp) |
+| [@theyahia/cbr-mcp](https://github.com/theYahia/cbr-mcp) | готов | Курсы валют, ключевая ставка |
+| [@theyahia/yookassa-mcp](https://github.com/theYahia/yookassa-mcp) | готов | Платежи, возвраты, чеки, выплаты, вебхуки |
+| [@theyahia/alfa-bank-mcp](https://github.com/theYahia/alfa-bank-mcp) | этот сервер | Бизнес-счета, выписки, платежи |
+| ... | | [полный список](https://github.com/theYahia/WWmcp) |
 
-## License
+## Лицензия
 
 MIT
 
